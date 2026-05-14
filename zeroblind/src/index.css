@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* 에이투지체(A2Z) 전체 웨이트 등록 */
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-1Thin.ttf') format('truetype');
+  font-weight: 100;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-2ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-3Light.ttf') format('truetype');
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-4Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-5Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-6SemiBold.ttf') format('truetype');
+  font-weight: 600;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-7Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-8ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+}
+@font-face {
+  font-family: 'A2Z';
+  src: url('/fonts/A2Z/에이투지체-9Black.ttf') format('truetype');
+  font-weight: 900;
+}
