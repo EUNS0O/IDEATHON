@@ -182,3 +182,12 @@
     border-right-color: var(--border);
   }
 }
+
+.evacuation-path {
+  /* 선의 길이를 넉넉하게 설정 (실제 길이에 맞춰 자동으로 조절됨) */
+  stroke-dasharray: 1000; 
+  /* 부드러운 움직임을 위해 트랜지션 추가 */
+  transition: stroke-dashoffset 2000ms ease-in-out !important;
+  stroke-linecap: round; /* 선 끝을 둥글게 해서 더 예쁘게 */
+  stroke-linejoin: round; /* 꺾이는 부분도 부드럽게 */
+}
