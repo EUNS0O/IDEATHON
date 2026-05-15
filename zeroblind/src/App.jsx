@@ -175,7 +175,7 @@ function EvacuationView({ setStep }) {
     <div className="w-full h-full bg-[#F9F9F9] flex flex-col relative overflow-hidden text-left">
 
       {/* 상단 화재 알림 바 */}
-      <div className="mt-[100px] mx-[28px] bg-[#FA5E25] text-white p-4 rounded-[16px] flex items-center gap-3 shadow-lg z-30">
+      <div className="mt-[115px] mx-[28px] bg-[#FA5E25] text-white p-4 rounded-[16px] flex items-center gap-3 shadow-lg z-30">
         <div className="bg-white p-2 rounded-full text-xl text-[#FA5E25] w-10 h-10 flex items-center justify-center">
           🔥
         </div>
@@ -189,9 +189,8 @@ function EvacuationView({ setStep }) {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col mt-2 relative z-20">
-        <div className="relative mx-6 flex-1 max-h-[440px] bg-white rounded-[24px] border border-gray-100 shadow-inner overflow-hidden">
-
+      <div className="flex-1 flex flex-col mt-4 mb-24 relative z-20"> {/* mb-24를 주어 하단 바와의 최소 간격만 확보 */}
+  <div className="relative mx-6 flex-1 bg-white rounded-[24px] border border-gray-100 shadow-inner overflow-hidden max-h-[500px]">
           {/* 안내 문구  */}
 
 {/* 안내 문구 (여백 최소화 콤팩트 스타일) */}
@@ -207,7 +206,7 @@ function EvacuationView({ setStep }) {
           <div
             className="absolute"
             style={{
-              transform: `translate(${175 - pos.x}px, ${200 - pos.y}px)`,
+              transform: `translate(${175 - pos.x}px, ${240 - pos.y}px)`, 
               width: "1200px",
               height: "1000px",
               willChange: "transform"
