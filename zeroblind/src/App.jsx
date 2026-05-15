@@ -1,16 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import mainMap from "./assets/main_map.png";
+import miniMap from "./assets/mini_map.png";
 
 function EvacuationView({ setStep }) {
   const [pos, setPos] = useState({ x: 395, y: 535 });
   const [message, setMessage] = useState("안내하는 경로로 움직이세요");
-  const [subMessage, setSubMessage] = useState("대피 시뮬레이션을 시작합니다");
   const [isPlaying, setIsPlaying] = useState(false);
 
   // 경로 삭제용 offset
   const [pathOffset, setPathOffset] = useState(0);
-
-  // 현재 애니메이션 시간
-  const [transitionTime, setTransitionTime] = useState(0);
 
   // SVG Path Ref
   const pathRef = React.useRef(null);
@@ -98,7 +96,6 @@ function EvacuationView({ setStep }) {
     const scenario = [
       {
         msg: "대피 시뮬레이션 시작",
-        sub: "경로를 따라가세요",
         x: 455,
         y: 485,
         dur: 2500,
@@ -106,7 +103,6 @@ function EvacuationView({ setStep }) {
       },
       {
         msg: "앞으로 200m 이동",
-        sub: "복도를 따라 직진하세요",
         x: 335,
         y: 435,
         dur: 2500,
@@ -114,7 +110,6 @@ function EvacuationView({ setStep }) {
       },
       {
         msg: "왼쪽으로 꺾으세요",
-        sub: "역무실 방향으로 회전하세요",
         x: 455,
         y: 355,
         dur: 2000,
@@ -122,7 +117,6 @@ function EvacuationView({ setStep }) {
       },
       {
         msg: "리프트를 이용하세요",
-        sub: "리프트 방향으로 이동합니다",
         x: 455,
         y: 355,
         dur: 1000,
@@ -130,7 +124,6 @@ function EvacuationView({ setStep }) {
       },
       {
         msg: "안전 구역 도착",
-        sub: "구조를 기다리세요",
         x: 405,
         y: 315,
         dur: 1500,
@@ -151,8 +144,7 @@ function EvacuationView({ setStep }) {
       const step = scenario[index];
 
       setMessage(step.msg);
-      setSubMessage(step.sub);
-      setTransitionTime(step.dur);
+    
 
       animateRouteProgress({
         fromX: currentX,
@@ -200,36 +192,33 @@ function EvacuationView({ setStep }) {
       <div className="flex-1 flex flex-col mt-2 relative z-20">
         <div className="relative mx-6 flex-1 max-h-[440px] bg-white rounded-[24px] border border-gray-100 shadow-inner overflow-hidden">
 
-          {/* 안내 문구 */}
-          <div className="absolute top-4 inset-x-0 mx-auto w-[85%] z-50 pointer-events-none">
-            <div className="bg-white/85 backdrop-blur-md border border-[#FA5E25]/10 p-3 rounded-[18px] shadow-lg text-center">
-              <h3 className="text-[18px] font-bold text-[#FA5E25]">
-                {message}
-              </h3>
+          {/* 안내 문구  */}
 
-              <p className="text-[11px] text-gray-500 mt-0.5">
-                {subMessage}
-              </p>
-            </div>
-          </div>
+{/* 안내 문구 (여백 최소화 콤팩트 스타일) */}
+<div className="absolute top-5 inset-x-0 mx-auto flex justify-center z-[100] pointer-events-none">
+  <div className="bg-white/90 backdrop-blur-md border border-white/60 shadow-md px-4 py-1.5 rounded-[10px] flex items-center justify-center animate-in slide-in-from-top duration-700">
+    <h3 className="text-center text-[15px] font-[800] text-[#FA5E25] tracking-tighter whitespace-nowrap">
+      {message}
+    </h3>
+  </div>
+</div>
 
           {/* 이동 그룹 */}
           <div
             className="absolute"
             style={{
               transform: `translate(${175 - pos.x}px, ${200 - pos.y}px)`,
-
               width: "1200px",
               height: "1000px",
-
               willChange: "transform"
             }}
           >
+
             {/* 메인 지도 */}
             <div
               className="absolute inset-0"
               style={{
-                backgroundImage: `url('/src/assets/main_map.png')`,
+                backgroundImage: `url(${mainMap})`,
                 backgroundSize: "contain",
                 backgroundRepeat: "no-repeat",
                 width: "100%",
@@ -249,15 +238,19 @@ function EvacuationView({ setStep }) {
               <path
                 ref={pathRef}
                 d={pathD}
-                stroke="#FA5E25"
-                strokeWidth="15"
+                stroke="#FF6A2B"
+                strokeWidth="10"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="drop-shadow-[0_0_12px_rgba(250,94,37,0.9)]"
                 style={{
                   strokeDasharray: `${pathLength - pathOffset} ${pathLength}`,
-                  strokeDashoffset: -pathOffset
+                  strokeDashoffset: -pathOffset,
+
+                  filter: `
+                    drop-shadow(0 0 2px rgba(255,106,43,0.9))
+                    drop-shadow(0 0 6px rgba(255,106,43,0.5))
+                  `
                 }}
               />
             </svg>
@@ -269,7 +262,7 @@ function EvacuationView({ setStep }) {
 
               {/* 미니맵 이미지 */}
               <img
-                src="/src/assets/mini_map.png"
+                src={miniMap}
                 alt="미니맵"
                 className="w-full h-full object-cover opacity-80"
               />
@@ -301,17 +294,26 @@ function EvacuationView({ setStep }) {
             </div>
           </div>
 
-          {/* 중앙 고정 사용자 마커 */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none">
-            <div className="relative">
+         {/* 사용자 위치 마커 */}
+<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[85%] z-40 pointer-events-none">
 
-              {/* Ping */}
-              <div className="absolute inset-0 w-5 h-5 bg-[#007AFF] rounded-full opacity-30 animate-ping" />
+  {/* 그림자 */}
+  <div className="absolute left-1/2 top-[42px] -translate-x-1/2 w-10 h-4 bg-[#FF6A2B]/25 blur-md rounded-full" />
 
-              {/* Main Marker */}
-              <div className="w-5 h-5 bg-[#007AFF] rounded-full border-4 border-white shadow-lg animate-bounce" />
-            </div>
-          </div>
+  {/* 핀 */}
+  <div
+    className="relative w-[34px] h-[34px] bg-[#FF6A2B] rounded-full rotate-45 shadow-lg"
+    style={{
+      borderBottomRightRadius: "4px"
+    }}
+  >
+    {/* 내부 흰 원 */}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-3 h-3 bg-white rounded-full -rotate-45" />
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
 
