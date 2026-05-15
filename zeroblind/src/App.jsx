@@ -246,6 +246,8 @@ function EvacuationView({ setStep }) {
                 style={{
                   strokeDasharray: `${pathLength - pathOffset} ${pathLength}`,
                   strokeDashoffset: -pathOffset,
+                  opacity: pathOffset >= pathLength - 1 ? 0 : 1, 
+                  transition: 'opacity 0.0001s',
 
                   filter: `
                     drop-shadow(0 0 2px rgba(255,106,43,0.9))
@@ -281,16 +283,7 @@ function EvacuationView({ setStep }) {
                 }}
               />
 
-              {/* 현재 사용자 위치 */}
-              <div
-                className="absolute w-2 h-2 bg-[#FA5E25] rounded-full shadow"
-                style={{
-                  left: `${pos.x * MINI_MAP_SCALE_X}px`,
-                  top: `${pos.y * MINI_MAP_SCALE_Y}px`,
-
-                  transform: "translate(-50%, -50%)"
-                }}
-              />
+              
             </div>
           </div>
 
@@ -304,7 +297,7 @@ function EvacuationView({ setStep }) {
 {/* 사용자 위치 마커 */}
 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100%] z-40 pointer-events-none">
 
-  {/* 그림자 */}
+
   <div className="absolute left-1/2 top-[42px] -translate-x-1/2 w-10 h-4 bg-[#FF6A2B]/25 blur-md rounded-full" />
 
   {/* 핀 */}
