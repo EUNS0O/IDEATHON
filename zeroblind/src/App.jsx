@@ -1,124 +1,264 @@
-
-
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 function EvacuationView({ setStep }) {
-  // 1. 상태 관리
-  const [pos, setPos] = useState({ x: -60, y: -280 }); 
+  const [pos, setPos] = useState({ x: 395, y: 535 });
   const [message, setMessage] = useState("안내하는 경로로 움직이세요");
   const [subMessage, setSubMessage] = useState("대피 시뮬레이션을 시작합니다");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  
-  // ★ 마커 이동 시간과 선 사라지는 시간을 동기화하기 위한 상태
-  const [transitionTime, setTransitionTime] = useState(2000);
 
-  // 2. 전체 경로 좌표 (은수님과 맞춘 최종본)
-  const fullPath = [
-    "M 395 535", 
-    "L 455 485", 
-    "L 335 435", 
-    "L 455 355", 
-    "L 455 355", 
-    "L 405 315"
-  ];
+  // 경로 삭제용 offset
+  const [pathOffset, setPathOffset] = useState(0);
 
-  // 3. 시나리오 실행 함수
-  const startScenario = () => {
-    if (isPlaying) return;
-    setIsPlaying(true);
-    setCurrentStep(0);
+  // 현재 애니메이션 시간
+  const [transitionTime, setTransitionTime] = useState(0);
 
-    // 각 구간별 이동 시간(duration)을 명시하여 동기화 정밀도를 높임
-    const scenario = [
-      { time: 0, msg: "안내하는 경로로 움직이세요", sub: "대피 시뮬레이션을 시작합니다", x: -60, y: -280, step: 0, duration: 0 },
-      { time: 2500, msg: "앞으로 200m 이동", sub: "복도를 따라 직진하세요", x: -120, y: -210, step: 1, duration: 2500 },
-      { time: 5000, msg: "왼쪽으로 꺾으세요", sub: "역무실 방향으로 회전하세요", x: -45, y: -180, step: 2, duration: 2500 },
-      { time: 7000, msg: "리프트를 이용하세요", sub: "1번 출구 리프트 방향으로 이동합니다", x: -125, y: -100, step: 3, duration: 2000 },
-      { time: 8000, msg: "리프트를 이용하세요", sub: "출구 방향으로 이동합니다", x: -125, y: -100, step: 4, duration: 1000 },
-      { time: 8500, msg: "안전 구역에 도착했습니다", sub: "구조 대원의 안내를 기다리세요", x: -95, y: -65, step: 5, duration: 500 }
-    ];
+  // SVG Path Ref
+  const pathRef = React.useRef(null);
 
-    scenario.forEach(({ time, msg, sub, x, y, step, duration }) => {
-      setTimeout(() => {
-        setTransitionTime(duration); // 애니메이션 지속 시간을 구간 속도에 맞춤
-        setMessage(msg);
-        setSubMessage(sub);
-        setPos({ x, y });
-        setCurrentStep(step);
-        
-        if (step === 5) {
-          setTimeout(() => setIsPlaying(false), duration + 500);
-        }
-      }, time);
-    });
+  // 실제 path 총 길이
+  const [pathLength, setPathLength] = useState(1000);
+
+  // 미니맵 비율
+  const MINI_MAP_SCALE_X = 110 / 1200;
+  const MINI_MAP_SCALE_Y = 80 / 1000;
+
+  // 경로
+  const pathD = `
+    M 395 535
+    L 455 485
+    L 335 435
+    L 455 355
+    L 455 355
+    L 405 315
+  `;
+
+  // 실제 SVG Path 길이 계산
+  useEffect(() => {
+    if (pathRef.current) {
+      const total = pathRef.current.getTotalLength();
+      setPathLength(total);
+    }
+  }, []);
+
+  // easing
+  const easeLinear = (t) => t;
+
+  // 실시간 경로 제거 애니메이션
+  const animateRouteProgress = ({
+    fromX,
+    fromY,
+    toX,
+    toY,
+    fromOffset,
+    toOffset,
+    duration,
+    onDone
+  }) => {
+    const start = performance.now();
+
+    const frame = (now) => {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
+
+      const eased = easeLinear(t);
+
+      // 지도 위치 보간
+      const currentX = fromX + (toX - fromX) * eased;
+      const currentY = fromY + (toY - fromY) * eased;
+
+      // 경로 삭제 보간
+      const currentOffset =
+        fromOffset + (toOffset - fromOffset) * eased;
+
+      setPos({
+        x: currentX,
+        y: currentY
+      });
+
+      setPathOffset(currentOffset);
+
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        onDone?.();
+      }
+    };
+
+    requestAnimationFrame(frame);
   };
 
-  // 실시간 선 줄어들기 오프셋 계산 (전체 단계 5 기준)
-  const offsetValue = (currentStep / 5) * 1000;
+  const startScenario = () => {
+    if (isPlaying) return;
+
+    setIsPlaying(true);
+
+    setPos({ x: 395, y: 535 });
+    setPathOffset(0);
+
+    const scenario = [
+      {
+        msg: "대피 시뮬레이션 시작",
+        sub: "경로를 따라가세요",
+        x: 455,
+        y: 485,
+        dur: 2500,
+        progress: 0.23
+      },
+      {
+        msg: "앞으로 200m 이동",
+        sub: "복도를 따라 직진하세요",
+        x: 335,
+        y: 435,
+        dur: 2500,
+        progress: 0.48
+      },
+      {
+        msg: "왼쪽으로 꺾으세요",
+        sub: "역무실 방향으로 회전하세요",
+        x: 455,
+        y: 355,
+        dur: 2000,
+        progress: 0.82
+      },
+      {
+        msg: "리프트를 이용하세요",
+        sub: "리프트 방향으로 이동합니다",
+        x: 455,
+        y: 355,
+        dur: 1000,
+        progress: 0.82
+      },
+      {
+        msg: "안전 구역 도착",
+        sub: "구조를 기다리세요",
+        x: 405,
+        y: 315,
+        dur: 1500,
+        progress: 1
+      }
+    ];
+
+    let currentX = 395;
+    let currentY = 535;
+    let currentProgress = 0;
+
+    const runStep = (index) => {
+      if (index >= scenario.length) {
+        setIsPlaying(false);
+        return;
+      }
+
+      const step = scenario[index];
+
+      setMessage(step.msg);
+      setSubMessage(step.sub);
+      setTransitionTime(step.dur);
+
+      animateRouteProgress({
+        fromX: currentX,
+        fromY: currentY,
+
+        toX: step.x,
+        toY: step.y,
+
+        fromOffset: pathLength * currentProgress,
+        toOffset: pathLength * step.progress,
+
+        duration: step.dur,
+
+        onDone: () => {
+          currentX = step.x;
+          currentY = step.y;
+          currentProgress = step.progress;
+
+          runStep(index + 1);
+        }
+      });
+    };
+
+    runStep(0);
+  };
 
   return (
-    <div className="w-full h-full bg-[#F9F9F9] flex flex-col relative animate-in fade-in duration-500 overflow-hidden text-left">
-      
+    <div className="w-full h-full bg-[#F9F9F9] flex flex-col relative overflow-hidden text-left">
+
       {/* 상단 화재 알림 바 */}
       <div className="mt-[100px] mx-[28px] bg-[#FA5E25] text-white p-4 rounded-[16px] flex items-center gap-3 shadow-lg z-30">
-        <div className="bg-white p-2 rounded-full text-xl text-[#FA5E25] w-10 h-10 flex items-center justify-center">🔥</div>
+        <div className="bg-white p-2 rounded-full text-xl text-[#FA5E25] w-10 h-10 flex items-center justify-center">
+          🔥
+        </div>
+
         <div>
           <h2 className="font-bold text-[16px]">[화재]발생</h2>
-          <p className="text-[10px] opacity-90">3분 전 신도림역 B1 대합실 대형 화재 발생</p>
+
+          <p className="text-[10px] opacity-90">
+            3분 전 신도림역 대형 화재 발생
+          </p>
         </div>
       </div>
 
       <div className="flex-1 flex flex-col mt-2 relative z-20">
         <div className="relative mx-6 flex-1 max-h-[440px] bg-white rounded-[24px] border border-gray-100 shadow-inner overflow-hidden">
-          
+
           {/* 안내 문구 */}
           <div className="absolute top-4 inset-x-0 mx-auto w-[85%] z-50 pointer-events-none">
             <div className="bg-white/85 backdrop-blur-md border border-[#FA5E25]/10 p-3 rounded-[18px] shadow-lg text-center">
-              <h3 className="text-[18px] font-bold text-[#FA5E25]">{message}</h3>
-              <p className="text-[11px] text-gray-500 mt-0.5">{subMessage}</p>
+              <h3 className="text-[18px] font-bold text-[#FA5E25]">
+                {message}
+              </h3>
+
+              <p className="text-[11px] text-gray-500 mt-0.5">
+                {subMessage}
+              </p>
             </div>
           </div>
 
-          {/* [Moving Group] 지도와 선의 애니메이션 속도를 transitionTime으로 동기화 */}
-          <div 
+          {/* 이동 그룹 */}
+          <div
             className="absolute"
-            style={{ 
-              transition: `transform ${transitionTime}ms ease-in-out`,
-              transform: `translate(${pos.x}px, ${pos.y}px)`,
-              width: '1200px', height: '1000px',
-              top: '-50px', left: '-150px'
+            style={{
+              transform: `translate(${175 - pos.x}px, ${200 - pos.y}px)`,
+
+              width: "1200px",
+              height: "1000px",
+
+              willChange: "transform"
             }}
           >
-            <div 
+            {/* 메인 지도 */}
+            <div
               className="absolute inset-0"
-              style={{ 
+              style={{
                 backgroundImage: `url('/src/assets/main_map.png')`,
-                backgroundSize: 'contain',
-                backgroundRepeat: 'no-repeat',
-                width: '100%', height: '100%'
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                width: "100%",
+                height: "100%"
               }}
             />
 
-            <svg 
-              className="absolute inset-0 pointer-events-none" 
+            {/* 대피 경로 */}
+            <svg
+              className="absolute inset-0 pointer-events-none"
               viewBox="0 0 1200 1000"
-              style={{ width: '100%', height: '100%' }}
+              style={{
+                width: "100%",
+                height: "100%"
+              }}
             >
-              <path 
-                d={fullPath.join(" ")} 
-                stroke="#FA5E25" 
-                strokeWidth="15" 
-                fill="none" 
+              <path
+                ref={pathRef}
+                d={pathD}
+                stroke="#FA5E25"
+                strokeWidth="15"
+                fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="drop-shadow-[0_0_12px_rgba(250,94,37,0.9)]"
-                style={{ 
-                  strokeDasharray: 1000, 
-                  strokeDashoffset: offsetValue,
-                  // 지도가 움직이는 시간과 동일하게 설정하여 실시간 동기화
-                  transition: `stroke-dashoffset ${transitionTime}ms ease-in-out`
-                }} 
+                style={{
+                  strokeDasharray: `${pathLength - pathOffset} ${pathLength}`,
+                  strokeDashoffset: -pathOffset
+                }}
               />
             </svg>
           </div>
@@ -126,40 +266,76 @@ function EvacuationView({ setStep }) {
           {/* 미니맵 */}
           <div className="absolute top-4 right-4 z-50 shadow-md border-2 border-white rounded-lg overflow-hidden bg-white/80 backdrop-blur-sm">
             <div className="relative w-[110px] h-[80px]">
-              <img src="/src/assets/mini_map.png" alt="미니맵" className="w-full h-full object-cover opacity-80" />
-              <div 
-                className="absolute border-2 border-blue-500 bg-blue-500/20"
+
+              {/* 미니맵 이미지 */}
+              <img
+                src="/src/assets/mini_map.png"
+                alt="미니맵"
+                className="w-full h-full object-cover opacity-80"
+              />
+
+              {/* 현재 화면 viewport */}
+              <div
+                className="absolute border-2 border-blue-500 bg-blue-500/20 rounded-sm"
                 style={{
-                  width: '35px', height: '25px', top: '18px', left: '38px',
-                  transition: `transform ${transitionTime}ms ease-in-out`,
-                  transform: `translate(${-pos.x * 0.12}px, ${-pos.y * 0.12}px)`
+                  width: "35px",
+                  height: "25px",
+
+                  left: `${pos.x * MINI_MAP_SCALE_X}px`,
+                  top: `${pos.y * MINI_MAP_SCALE_Y}px`,
+
+                  transform: "translate(-50%, -50%)"
+                }}
+              />
+
+              {/* 현재 사용자 위치 */}
+              <div
+                className="absolute w-2 h-2 bg-[#FA5E25] rounded-full shadow"
+                style={{
+                  left: `${pos.x * MINI_MAP_SCALE_X}px`,
+                  top: `${pos.y * MINI_MAP_SCALE_Y}px`,
+
+                  transform: "translate(-50%, -50%)"
                 }}
               />
             </div>
           </div>
 
-          {/* 사용자 위치 마커 (중앙 고정) */}
+          {/* 중앙 고정 사용자 마커 */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none">
             <div className="relative">
+
+              {/* Ping */}
+              <div className="absolute inset-0 w-5 h-5 bg-[#007AFF] rounded-full opacity-30 animate-ping" />
+
+              {/* Main Marker */}
               <div className="w-5 h-5 bg-[#007AFF] rounded-full border-4 border-white shadow-lg animate-bounce" />
-              <div className="absolute -top-1 w-5 h-5 bg-[#007AFF] rounded-full opacity-30 animate-ping" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* 하단 컨트롤 영역 */}
+      {/* 하단 버튼 */}
       <div className="py-8 px-6 flex flex-col items-center gap-4 z-30">
-        <button 
+
+        <button
           onClick={startScenario}
           disabled={isPlaying}
           className={`w-full max-w-[240px] py-4 rounded-full font-bold shadow-xl transition-all ${
-            isPlaying ? 'bg-gray-300 text-gray-600' : 'bg-[#FA5E25] text-white active:scale-95'
+            isPlaying
+              ? "bg-gray-300 text-gray-600"
+              : "bg-[#FA5E25] text-white active:scale-95"
           }`}
         >
-          {isPlaying ? '시뮬레이션 진행 중...' : '▶ 전체 시나리오 재생'}
+          {isPlaying
+            ? "시뮬레이션 진행 중..."
+            : "▶ 전체 시나리오 재생"}
         </button>
-        <button onClick={() => setStep(1)} className="text-gray-400 text-[11px] underline">
+
+        <button
+          onClick={() => setStep(1)}
+          className="text-gray-400 text-[11px] underline"
+        >
           처음 화면으로
         </button>
       </div>
