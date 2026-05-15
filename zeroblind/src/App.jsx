@@ -95,21 +95,21 @@ function EvacuationView({ setStep }) {
 
     const scenario = [
       {
-        msg: "대피 시뮬레이션 시작",
+        msg: "앞으로 200m 이동",
         x: 455,
         y: 485,
         dur: 2500,
         progress: 0.23
       },
       {
-        msg: "앞으로 200m 이동",
+        msg: "왼쪽으로 꺾으세요",
         x: 335,
         y: 435,
         dur: 2500,
         progress: 0.48
       },
       {
-        msg: "왼쪽으로 꺾으세요",
+        msg: "리프트를 이용하세요",
         x: 455,
         y: 355,
         dur: 2000,
@@ -274,8 +274,8 @@ function EvacuationView({ setStep }) {
                   width: "35px",
                   height: "25px",
 
-                  left: `${pos.x * MINI_MAP_SCALE_X}px`,
-                  top: `${pos.y * MINI_MAP_SCALE_Y}px`,
+                  left: `${(pos.x * MINI_MAP_SCALE_X)+25}px`,
+                  top: `${(pos.y * MINI_MAP_SCALE_Y)-2}px`,
 
                   transform: "translate(-50%, -50%)"
                 }}
@@ -294,8 +294,15 @@ function EvacuationView({ setStep }) {
             </div>
           </div>
 
-         {/* 사용자 위치 마커 */}
-<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[85%] z-40 pointer-events-none">
+          <button 
+            onClick={startScenario} 
+            disabled={isPlaying}
+            className={`absolute bottom-4 right-4 z-[60] w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all ${isPlaying ? 'bg-gray-200 text-gray-400' : 'bg-white text-[#FA5E25] active:scale-90'}`}
+          >
+            {isPlaying ? <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent animate-spin rounded-full" /> : "▶"}
+          </button>
+{/* 사용자 위치 마커 */}
+<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100%] z-40 pointer-events-none">
 
   {/* 그림자 */}
   <div className="absolute left-1/2 top-[42px] -translate-x-1/2 w-10 h-4 bg-[#FF6A2B]/25 blur-md rounded-full" />
@@ -318,29 +325,34 @@ function EvacuationView({ setStep }) {
       </div>
 
       {/* 하단 버튼 */}
-      <div className="py-8 px-6 flex flex-col items-center gap-4 z-30">
-
-        <button
-          onClick={startScenario}
-          disabled={isPlaying}
-          className={`w-full max-w-[240px] py-4 rounded-full font-bold shadow-xl transition-all ${
-            isPlaying
-              ? "bg-gray-300 text-gray-600"
-              : "bg-[#FA5E25] text-white active:scale-95"
-          }`}
-        >
-          {isPlaying
-            ? "시뮬레이션 진행 중..."
-            : "▶ 전체 시나리오 재생"}
-        </button>
-
-        <button
-          onClick={() => setStep(1)}
-          className="text-gray-400 text-[11px] underline"
-        >
-          처음 화면으로
-        </button>
+      {/* --- 하단 컨트롤 바 레이어 --- */}
+<div className="absolute bottom-[40px] inset-x-0 mx-[24px] z-50 flex items-center justify-between pointer-events-auto">
+  
+  {/* 1. 음성 안내 토글 */}
+  <div className="relative flex items-center">
+    <div className="w-[100px] h-[38px] bg-white rounded-full shadow-md border border-gray-100 flex items-center px-1">
+      <div className="w-[32px] h-[32px] bg-[#78A1A6] rounded-full flex items-center justify-center shadow-sm z-10">
+        <span className="text-white text-[10px] font-semibold leading-none text-center">음성<br/>안내</span>
       </div>
+      <div className="flex-1 flex justify-end pr-2">
+        <div className="w-[30px] h-[30px] bg-[#D1E5E0] rounded-full" />
+      </div>
+    </div>
+  </div>
+
+  {/* 2. 긴급 전화 버튼 (중앙) */}
+  <button className="w-[82px] h-[82px] bg-[#FF5C28] rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform border-[3px] border-white/20">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="white">
+      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+    </svg>
+  </button>
+
+  {/* 3. 현재위치 재탐색 버튼 */}
+  <button className="h-[42px] px-4 bg-[#76BA7E] text-white rounded-full shadow-md flex items-center justify-center active:scale-95 transition-all border border-white/30">
+    <span className="text-[14px]  font-semibold tracking-tight">현재위치 재탐색</span>
+  </button>
+
+</div>
     </div>
   );
 }
