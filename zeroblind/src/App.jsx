@@ -321,17 +321,24 @@ function EvacuationView({ setStep }) {
       {/* --- 하단 컨트롤 바 레이어 --- */}
 <div className="absolute bottom-[40px] inset-x-0 mx-[24px] z-50 flex items-center justify-between pointer-events-auto">
   
-  {/* 1. 음성 안내 토글 */}
-  <div className="relative flex items-center">
-    <div className="w-[100px] h-[38px] bg-white rounded-full shadow-md border border-gray-100 flex items-center px-1">
-      <div className="w-[32px] h-[32px] bg-[#78A1A6] rounded-full flex items-center justify-center shadow-sm z-10">
-        <span className="text-white text-[10px] font-semibold leading-none text-center">음성<br/>안내</span>
-      </div>
-      <div className="flex-1 flex justify-end pr-2">
-        <div className="w-[30px] h-[30px] bg-[#D1E5E0] rounded-full" />
-      </div>
+  {/* 1. 음성 안내 토글 (사진 속 양끝 배치 버전) */}
+<div className="relative flex items-center">
+  {/* 배경 흰색 바: 안쪽 패딩을 없애고 justify-between 적용 */}
+  <div className="w-[115px] h-[40px] bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-between relative">
+    
+    {/* 왼쪽 '음성안내' 큰 원: 바 왼쪽 끝에 딱 붙이거나 살짝 걸치게 배치 */}
+    <div className="absolute -left-1 w-[54px] h-[54px] bg-[#78A1A6] rounded-full flex items-center justify-center shadow-md z-10">
+      <span className="text-white text-[11px] font-bold leading-tight text-center">
+        음성<br/>안내
+      </span>
+    </div>
+
+    {/* 오른쪽 연한 민트색 원: 오른쪽 끝 여백만 살짝 주고 배치 */}
+    <div className="flex-1 flex justify-end pr-1">
+      <div className="w-[32px] h-[32px] bg-[#D1E5E0] rounded-full" />
     </div>
   </div>
+</div>
 
   {/* 2. 긴급 전화 버튼 (중앙) */}
   <button className="w-[82px] h-[82px] bg-[#FF5C28] rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform border-[3px] border-white/20">
