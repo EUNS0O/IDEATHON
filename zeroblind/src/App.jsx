@@ -189,18 +189,17 @@ function EvacuationView({ setStep }) {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col mt-4 mb-24 relative z-20"> {/* mb-24를 주어 하단 바와의 최소 간격만 확보 */}
-  <div className="relative mx-6 flex-1 bg-white rounded-[24px] border border-gray-100 shadow-inner overflow-hidden max-h-[500px]">
-          {/* 안내 문구  */}
+      <div className="flex-1 flex flex-col mt-4 mb-20 relative z-20"> 
+        <div className="relative mx-6 flex-1 bg-white rounded-[24px] border border-gray-100 shadow-inner overflow-hidden max-h-[500px]">
 
-{/* 안내 문구 (여백 최소화 콤팩트 스타일) */}
-<div className="absolute top-5 inset-x-0 mx-auto flex justify-center z-[100] pointer-events-none">
-  <div className="bg-white/90 backdrop-blur-md border border-white/60 shadow-md px-4 py-1.5 rounded-[10px] flex items-center justify-center animate-in slide-in-from-top duration-700">
-    <h3 className="text-center text-[15px] font-[800] text-[#FA5E25] tracking-tighter whitespace-nowrap">
-      {message}
-    </h3>
-  </div>
-</div>
+          {/* 안내 문구 (여백 최소화 콤팩트 스타일) */}
+          <div className="absolute top-5 inset-x-0 mx-auto flex justify-center z-[100] pointer-events-none">
+            <div className="bg-white/90 backdrop-blur-md border border-white/60 shadow-md px-4 py-1.5 rounded-[10px] flex items-center justify-center animate-in slide-in-from-top duration-700">
+              <h3 className="text-center text-[15px] font-[800] text-[#FA5E25] tracking-tighter whitespace-nowrap">
+                {message}
+              </h3>
+            </div>
+          </div>
 
           {/* 이동 그룹 */}
           <div
@@ -281,8 +280,6 @@ function EvacuationView({ setStep }) {
                   transform: "translate(-50%, -50%)"
                 }}
               />
-
-              
             </div>
           </div>
 
@@ -293,81 +290,81 @@ function EvacuationView({ setStep }) {
           >
             {isPlaying ? <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent animate-spin rounded-full" /> : "▶"}
           </button>
-{/* 사용자 위치 마커 */}
-<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100%] z-40 pointer-events-none">
 
+          {/* 사용자 위치 마커 */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100%] z-40 pointer-events-none">
+            <div className="absolute left-1/2 top-[42px] -translate-x-1/2 w-10 h-4 bg-[#FF6A2B]/25 blur-md rounded-full" />
 
-  <div className="absolute left-1/2 top-[42px] -translate-x-1/2 w-10 h-4 bg-[#FF6A2B]/25 blur-md rounded-full" />
-
-  {/* 핀 */}
-  <div
-    className="relative w-[34px] h-[34px] bg-[#FF6A2B] rounded-full rotate-45 shadow-lg"
-    style={{
-      borderBottomRightRadius: "4px"
-    }}
-  >
-    {/* 내부 흰 원 */}
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="w-3 h-3 bg-white rounded-full -rotate-45" />
-    </div>
-  </div>
-</div>
+            {/* 핀 */}
+            <div
+              className="relative w-[34px] h-[34px] bg-[#FF6A2B] rounded-full rotate-45 shadow-lg"
+              style={{
+                borderBottomRightRadius: "4px"
+              }}
+            >
+              {/* 내부 흰 원 */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-3 h-3 bg-white rounded-full -rotate-45" />
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
 
       {/* 하단 버튼 */}
       {/* --- 하단 컨트롤 바 레이어 --- */}
-<div className="absolute bottom-[40px] inset-x-0 mx-[24px] z-50 flex items-center justify-between pointer-events-auto">
-  
-  {/* 1. 음성 안내 토글 (사진 속 양끝 배치 버전) */}
-<div className="relative flex items-center">
-  {/* 배경 흰색 바: 안쪽 패딩을 없애고 justify-between 적용 */}
-  <div className="w-[115px] h-[40px] bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-between relative">
-    
-    {/* 왼쪽 '음성안내' 큰 원: 바 왼쪽 끝에 딱 붙이거나 살짝 걸치게 배치 */}
-    <div className="absolute -left-1 w-[54px] h-[54px] bg-[#78A1A6] rounded-full flex items-center justify-center shadow-md z-10">
-      <span className="text-white text-[11px] font-bold leading-tight text-center">
-        음성<br/>안내
-      </span>
-    </div>
+      <div className="absolute bottom-[40px] inset-x-0 mx-[24px] z-50 flex items-center justify-between pointer-events-auto">
+        
+        {/* 1. 음성 안내 토글 (사진 속 양끝 배치 버전) */}
+        <div className="relative flex items-center">
+          <div className="w-[115px] h-[40px] bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-between relative">
+            
+            {/* 왼쪽 '음성안내' 큰 원 */}
+            <div className="absolute -left-1 w-[54px] h-[54px] bg-[#78A1A6] rounded-full flex items-center justify-center shadow-md z-10">
+              <span className="text-white text-[11px] font-bold leading-tight text-center">
+                음성<br/>안내
+              </span>
+            </div>
 
-    {/* 오른쪽 연한 민트색 원: 오른쪽 끝 여백만 살짝 주고 배치 */}
-    <div className="flex-1 flex justify-end pr-1">
-      <div className="w-[32px] h-[32px] bg-[#D1E5E0] rounded-full" />
-    </div>
-  </div>
-</div>
+            {/* 오른쪽 연한 민트색 원 */}
+            <div className="flex-1 flex justify-end pr-1">
+              <div className="w-[32px] h-[32px] bg-[#D1E5E0] rounded-full" />
+            </div>
+          </div>
+        </div>
 
-  {/* 2. 긴급 전화 버튼 (중앙) */}
-  <button className="w-[82px] h-[82px] bg-[#FF5C28] rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform border-[3px] border-white/20">
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="white">
-      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-    </svg>
-  </button>
+        {/* 2. 긴급 전화 버튼 (중앙) */}
+        <button className="w-[82px] h-[82px] bg-[#FF5C28] rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform border-[3px] border-white/20">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="white">
+            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+          </svg>
+        </button>
 
-  {/* 3. 현재위치 재탐색 버튼 */}
-  <button className="h-[42px] px-4 bg-[#76BA7E] text-white rounded-full shadow-md flex items-center justify-center active:scale-95 transition-all border border-white/30">
-    <span className="text-[14px]  font-semibold tracking-tight">현재위치 재탐색</span>
-  </button>
+        {/* 3. 현재위치 재탐색 버튼 */}
+        <button className="h-[42px] px-4 bg-[#76BA7E] text-white rounded-full shadow-md flex items-center justify-center active:scale-95 transition-all border border-white/30">
+          <span className="text-[14px]  font-semibold tracking-tight">현재위치 재탐색</span>
+        </button>
 
-</div>
+      </div>
     </div>
   );
 }
 
 export default function App() {
-  // step 1: 재난감지 1번 (기본) / step 2: 재난발생 안내 (오렌지 카드)
   const [step, setStep] = useState(1);
 
   return (
-    /* 프로젝트 전체 A2Z 폰트 적용 */
-    <div className="flex justify-center bg-gray-200 min-h-screen font-a2z overflow-hidden antialiased">
+    /* ★ 핵심 변경 피드백: min-h-screen 체제를 모바일 스크린 높이에 맞추기 위해 h-screen(또는 h-[100dvh])으로 교정합니다.
+      데스크톱에서는 원래 프레임 크기를 보존(sm:w-[402px] sm:h-[874px] sm:rounded-[30px])하고, 
+      실제 모바일 진입 시 전체 화면을 가득 채우도록(w-full h-full sm:h-[874px]) 유연한 가변 레이아웃 브레이크포인트를 주었습니다.
+    */
+    <div className="flex justify-center items-center bg-gray-200 h-screen w-screen font-a2z overflow-hidden antialiased select-none">
       
-      {/* 전체 화면 프레임: 402px x 874px (하얀 배경 고정) */}
-      <div className="w-[402px] h-[874px] bg-[#F9F9F9] shadow-2xl relative flex flex-col overflow-hidden">
+      {/* 전체 화면 프레임: 데스크톱에선 402x874 고정박스 및 그림자 처리, 폰에서는 w-full h-full 피팅 */}
+      <div className="w-full h-full sm:w-[402px] sm:h-[874px] sm:max-h-[874px] bg-[#F9F9F9] sm:shadow-2xl sm:rounded-[40px] relative flex flex-col overflow-hidden">
         
-        {/* --- [공통 헤더]: 로고 화살표 라운드 제거 및 고정 배치 --- */}
+        {/* --- [공통 헤더] --- */}
         <header className="absolute top-[26px] left-[28px] w-[346px] h-[28px] flex justify-between items-center z-20">
           <div className="flex items-center" style={{ height: '28px' }}>
             <svg width="31.74" height="24.08" viewBox="0 0 31.74 24.08" fill="none">
@@ -390,11 +387,11 @@ export default function App() {
           </div>
         </header>
 
-        {/* --- [재난감지 1번 화면: 기존 코드 절대 보존] --- */}
+        {/* --- [재난감지 1번 화면] --- */}
         {step === 1 && (
           <div className="w-full h-full relative animate-in fade-in duration-300">
             <div 
-              className="absolute top-[17px] left-[49px] w-[303px] h-[86px] bg-[#F5F5F5]/95 rounded-[16px] flex items-center p-[12px] pl-[16px] z-40"
+              className="absolute top-[115px] left-1/2 -translate-x-1/2 w-[303px] h-[86px] bg-[#F5F5F5]/95 rounded-[16px] flex items-center p-[12px] pl-[16px] z-40"
               style={{ boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.25)' }}
             >
               <div className="shrink-0">
@@ -411,7 +408,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="absolute top-[320px] left-[130.5px] w-[141px] h-[34.83px] flex justify-between items-center z-10">
+            <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-[141px] h-[34.83px] flex justify-between items-center z-10">
               <div className="relative flex items-center justify-center" style={{ width: '34.83px', height: '34.83px' }}>
                 <div className="absolute inset-0 bg-[#FFD1C1]/50 rounded-full"></div>
                 <div className="absolute bg-[#FFD1C1] rounded-full" style={{ width: '23.03px', height: '23.59px' }}></div>
@@ -431,7 +428,7 @@ export default function App() {
               </div>
             </div>
 
-            <button className="absolute top-[428px] left-[64px] w-[274px] h-[68px] bg-[#FF7E50] text-[#FBFBFB] rounded-[20px] px-8 flex justify-between items-center shadow-lg active:scale-95 transition-all z-10">
+            <button className="absolute top-[58%] left-1/2 -translate-x-1/2 w-[274px] h-[68px] bg-[#FF7E50] text-[#FBFBFB] rounded-[20px] px-8 flex justify-between items-center shadow-lg active:scale-95 transition-all z-10">
               <span className="text-[15px] font-[500] whitespace-nowrap leading-none flex items-center">위치권한 승인</span>
               <div className="w-[30px] h-[30px] rounded-full border-2 border-white flex items-center justify-center font-[700]">
                 <svg width="18" height="16" viewBox="0 0 18 16" fill="none">
@@ -442,21 +439,20 @@ export default function App() {
 
             <button 
               onClick={() => setStep(2)}
-              className="absolute bottom-[33px] left-[32px] w-[338px] h-[68px] bg-[#FF7E50] text-[#FBFBFB] rounded-[20px] font-[600] text-[20px] shadow-xl active:bg-[#e66d45] transition-colors leading-none z-10"
+              className="absolute bottom-[40px] left-1/2 -translate-x-1/2 w-[338px] h-[68px] bg-[#FF7E50] text-[#FBFBFB] rounded-[20px] font-[600] text-[20px] shadow-xl active:bg-[#e66d45] transition-colors leading-none z-10"
             >
               확인
             </button>
           </div>
         )}
 
-        {/* --- [재난감지 2번 화면: 대괄호 및 아이콘 정밀 수정] --- */}
+        {/* --- [재난감지 2번 화면] --- */}
         {step === 2 && (
           <div className="w-full h-full relative animate-in fade-in zoom-in duration-300">
             
             <div 
-              className="absolute top-[357px] left-[62px] w-[278px] h-[196px] bg-[#FA5E25] rounded-[16px] shadow-2xl z-40 overflow-hidden"
+              className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[278px] h-[196px] bg-[#FA5E25] rounded-[16px] shadow-2xl z-40 overflow-hidden"
             >
-              {/* [방법] public 폴더의 fire.png를 불러와 정확한 수치로 배치 */}
               <img 
                 src="/fire.png" 
                 alt="화재 아이콘"
@@ -464,23 +460,18 @@ export default function App() {
                 style={{ top: '20px', left: '20px', width: '37.08px', height: '45.79px' }}
               />
 
-              {/* [수정] [화재]발생 문구: 대괄호[]를 텍스트보다 훨씬 크게(24px) 조정 */}
               <div 
                 className="absolute flex items-center justify-center text-[#FBFBFB]"
                 style={{ top: '27px', left: '70px', width: '100px', height: '24px' }}
               >
                 <span className="tracking-tighter whitespace-nowrap flex items-center">
-                  {/* 대괄호: 24px Bold */}
                   <span className="text-[24px] font-[700] mb-[2px]">[</span>
-                  {/* 화재: 20px Bold */}
                   <span className="text-[20px] font-[700] mx-[1px]">화재</span>
-                  <span className="text-[24px] font-[700] mb-[2px]">]</span>
-                  {/* 발생: 18px Medium */}
+                  <span className="text-[24px] font-[700] mb-[2pxShort]]">]</span>
                   <span className="text-[18px] font-[600] ml-1">발생</span>
                 </span>
               </div>
 
-              {/* 본문 문구 */}
               <div 
                 className="absolute flex flex-col items-center justify-center text-[#FBFBFB]"
                 style={{ top: '65px', left: '59px', width: '160px', height: '50px' }}
@@ -490,14 +481,12 @@ export default function App() {
                 </p>
               </div>
 
-              {/* 지금 대피 시작 버튼 */}
               <button onClick={()=>setStep(3)}
                 className="absolute bottom-[33px] left-1/2 -translate-x-1/2 w-[130px] h-[44px] bg-[#FBFBFB] text-[#FA5E25] rounded-[10px] shadow-sm active:scale-95 transition-all"
               >
                 <span className="text-[15px] font-[600] leading-none tracking-tighter">지금 대피 시작</span>
               </button>
 
-              {/* 상세보기 */}
               <button className="absolute bottom-[14px] left-1/2 -translate-x-1/2 flex items-center gap-1 text-[#FBFBFB] opacity-90">
                 <div className="w-[12px] h-[12px] rounded-full border border-white flex items-center justify-center text-[8px] font-bold">i</div>
                 <span className="text-[10px] font-[400] whitespace-nowrap tracking-tight">상세보기</span>
@@ -508,13 +497,12 @@ export default function App() {
               onClick={() => setStep(1)}
               className="absolute bottom-5 left-1/2 -translate-x-1/2 text-gray-400 text-[10px] underline z-50"
             >
-              이전 화면으로
+               이전 화면으로
             </button>
           </div>
         )}
 
         {/* --- [Step 3: 대피 안내] --- */}
-        {/* App.jsx 내부 */}
         {step === 3 && (
           <EvacuationView setStep={setStep} />
         )}
